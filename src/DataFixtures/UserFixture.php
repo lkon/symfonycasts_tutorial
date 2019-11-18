@@ -30,6 +30,7 @@ class UserFixture extends BaseFixture
                 ->setFirstName($this->faker->firstName)
                 ->setPassword($this->userPasswordEncoder->encodePassword($user, 'engage'))
                 ->setTwitterUsername($this->faker->userName)
+                ->agreeTerms()
                 ;
 
             $apiToken1 = new ApiToken($user);
@@ -45,7 +46,9 @@ class UserFixture extends BaseFixture
             $user->setEmail(sprintf('admin%d@thesacebar.com', $i))
                 ->setFirstName($this->faker->firstName)
                 ->setRoles(['ROLE_ADMIN'])
-                ->setPassword($this->userPasswordEncoder->encodePassword($user, 'engage'));
+                ->setPassword($this->userPasswordEncoder->encodePassword($user, 'engage'))
+                ->agreeTerms()
+            ;
 
             return $user;
         });

@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Validator\UniqueUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -22,7 +24,12 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * To control which fields are serialized, above each property,
+     * you can use an annotation to organize into "groups".
      * @Groups("main")
+     * @Assert\NotBlank(message="Please enter an email")
+     * @Assert\Email()
+     * @UniqueUser()
      */
     private $email;
 
@@ -32,7 +39,9 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * To control which fields are serialized, above each property,
+     * you can use an annotation to organize into "groups".
      * @Groups("main")
      */
     private $firstName;
@@ -44,6 +53,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * To control which fields are serialized, above each property,
+     * you can use an annotation to organize into "groups".
      * @Groups("main")
      */
     private $twitterUsername;
@@ -57,6 +68,11 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
      */
     private $articles;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $agreedTermsAt;
 
     public function __construct()
     {
@@ -240,5 +256,15 @@ class User implements UserInterface
     public function __toString()
     {
         return $this->getFirstName();
+    }
+
+    public function getAgreedTermsAt(): ?\DateTimeInterface
+    {
+        return $this->agreedTermsAt;
+    }
+
+    public function agreeTerms()
+    {
+        $this->agreedTermsAt = new \DateTime();
     }
 }

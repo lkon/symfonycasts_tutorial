@@ -22,6 +22,7 @@
         "symfony/security-bundle": "*",
         "symfony/serializer-pack": "*",
         "symfony/twig-bundle": "*",
+        "symfony/validator": "4.3.*",
         "symfony/web-server-bundle": "*",
         "symfony/yaml": "*",
         "twig/extensions": "*",

@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\Model\UserRegistrationFormModel;
+use App\Form\UserRegistrationFormType;
 use App\Security\LoginFormAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,37 @@ class SecurityController extends AbstractController
         LoginFormAuthenticator $loginFormAuthenticator
     )
     {
-        if ($request->isMethod('POST')) {
-            $user = new User();
-            $user->setEmail($request->request->get('email'))
-                ->setFirstName('Mystery');
+        $form = $this->createForm(UserRegistrationFormType::class);
+        $form->handleRequest($request);
 
-            $user->setPassword($userPasswordEncoder->encodePassword(
-                $user,
-                $request->request->get('password')
-            ));
+        if ($form->isSubmitted() && $form->isValid()) {
+            /**
+             * When you use a model class, the downside is that you need to do
+             * a bit more work to transfer the data from our model object
+             * into the entity object - or objects - that actually need it.
+             * That's why these model classes are often called "data transfer
+             * objects": they just hold data and help transfer it between
+             * systems: the form system and our entity classes.
+             */
+            /** @var UserRegistrationFormModel $userModel */
+            $userModel = $form->getData();
+
+            $user = new User();
+
+            $user
+                ->setEmail($userModel->email)
+                ->setPassword($userPasswordEncoder->encodePassword(
+                    $user,
+//                    $form['plainPassword']->getData())
+                    $userModel->plainPassword
+                ));
+
+            if (true === $userModel->agreeTerms) {
+                $user->agreeTerms();
+            }
+//            if (true === $form['agreeTerms']->getData()) {
+//                $user->agreeTerms();
+//            }
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -69,6 +93,30 @@ class SecurityController extends AbstractController
             );
         }
 
-        return $this->render('security/register.html.twig');
+//        if ($request->isMethod('POST')) {
+//            $user = new User();
+//            $user->setEmail($request->request->get('email'))
+//                ->setFirstName('Mystery');
+//
+//            $user->setPassword($userPasswordEncoder->encodePassword(
+//                $user,
+//                $request->request->get('password')
+//            ));
+//
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($user);
+//            $em->flush();
+//
+//            return $guardAuthenticatorHandler->authenticateUserAndHandleSuccess(
+//                $user,
+//                $request,
+//                $loginFormAuthenticator,
+//                'main'
+//            );
+//        }
+
+        return $this->render('security/register.html.twig', [
+            'registerForm' => $form->createView(),
+        ]);
     }
 }

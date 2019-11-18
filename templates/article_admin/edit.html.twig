@@ -1,0 +1,28 @@
+{% extends 'content_base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+
+{% block content_body %}
+    <form action="{{ path('upload_test') }}" enctype="multipart/form-data" method="post">
+        <div class="form-group">
+            <input type="file" name="image">
+        </div>
+        <button type="submit" class="btn btn-block btn-outline-primary">Upload!</button>
+    </form>
+
+    <h1>Edit the Article</h1>
+
+    {{ include('article_admin/_form.html.twig',{
+        button_text: 'Update'
+    }) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/algolia-autocomplete.js') }}"></script>
+    <script src="{{ asset('js/admin_article_form.js') }}"></script>
+{% endblock %}
