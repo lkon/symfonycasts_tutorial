@@ -4,8 +4,6 @@
 namespace App\Service;
 
 
-use Doctrine\Migrations\Configuration\Exception\FileNotFound;
-use Gedmo\Mapping\Annotation\TreePathHash;
 use Gedmo\Sluggable\Util\Urlizer;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
@@ -114,5 +112,16 @@ class UploaderHelper
         }
 
         return $resource;
+    }
+
+    public function deleteFile(string $path, bool $isPublic)
+    {
+        $filesystem = $isPublic ? $this->filesystem : $this->privateFilesystem;
+
+        $result = $filesystem->delete($path);
+
+        if ($result === false) {
+            throw new \Exception(sprintf('Error deleting "%s"', $path));
+        }
     }
 }
