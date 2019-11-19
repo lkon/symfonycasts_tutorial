@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\UploaderHelper;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +38,15 @@ class ArticleReference
      */
     private $mimeType;
 
+    /**
+     * ArticleReference constructor.
+     * @param $article
+     */
+    public function __construct(Article $article)
+    {
+        $this->article = $article;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,13 +55,6 @@ class ArticleReference
     public function getArticle(): ?Article
     {
         return $this->article;
-    }
-
-    public function setArticle(?Article $article): self
-    {
-        $this->article = $article;
-
-        return $this;
     }
 
     public function getFilename(): ?string
@@ -89,4 +92,10 @@ class ArticleReference
 
         return $this;
     }
+
+    public function getFilePath(): string
+    {
+        return UploaderHelper::ARTICLE_REFERENCE.'/'.$this->getFilename();
+    }
+
 }
