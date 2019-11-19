@@ -12,5 +12,10 @@
 /.web-server-pid
 ###< symfony/web-server-bundle ###
 .idea/*
-tutorial/
+/public/.DS_Store
 /public/uploads
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
+

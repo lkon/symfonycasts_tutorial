@@ -7,13 +7,15 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Form\ArticleFormType;
 use App\Repository\ArticleRepository;
+use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Gedmo\Sluggable\Util\Urlizer;
 
 class ArticleAdminController extends AbstractController
 {
@@ -21,7 +23,7 @@ class ArticleAdminController extends AbstractController
      * @Route("/admin/article/new", name="admin_article_new")
      * @IsGranted("ROLE_ADMIN_ARTICLE")
      */
-    public function new(EntityManagerInterface $entityManager, Request $request)
+    public function new(EntityManagerInterface $entityManager, Request $request, UploaderHelper $uploaderHelper)
     {
         $form = $this->createForm(ArticleFormType::class);
 
@@ -32,6 +34,13 @@ class ArticleAdminController extends AbstractController
 
             /** @var Article $article */
             $article = $form->getData();
+
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form['imageFile']->getData();
+            if ($uploadedFile) {
+                $newFileName = $uploaderHelper->uploadArticleImage($uploadedFile, $article->getImageFilename());
+                $article->setImageFilename($newFileName);
+            }
 
             $entityManager->persist($article);
             $entityManager->flush();
@@ -61,7 +70,11 @@ class ArticleAdminController extends AbstractController
      * @Route("/admin/article/{id}/edit", name="admin_article_edit")
      * @IsGranted("MANAGE", subject="article")
      */
-    public function edit(Article $article, Request $request, EntityManagerInterface $entityManager)
+    public function edit(
+        Article $article,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UploaderHelper $uploaderHelper)
     {
 //        $this->denyAccessUnlessGranted('MANAGE', $article);
 
@@ -71,11 +84,17 @@ class ArticleAdminController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $this->addFlash('success', 'Article Updated! Inaccuracies squashed!');
 
             /** @var Article $article */
             $article = $form->getData();
+
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form['imageFile']->getData();
+            if ($uploadedFile) {
+                $newFileName = $uploaderHelper->uploadArticleImage($uploadedFile, $article->getImageFilename());
+                $article->setImageFilename($newFileName);
+            }
 
             $entityManager->persist($article);
             $entityManager->flush();
@@ -112,13 +131,5 @@ class ArticleAdminController extends AbstractController
         return $this->render('article_admin/_specific_location_name.html.twig', [
             'articleForm' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @Route("/admin/upload/test", name="upload_test")
-     */
-    public function temporaryUploadAction(Request $request)
-    {
-        dd($request->files->get('image'));
     }
 }

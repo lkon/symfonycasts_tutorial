@@ -2,6 +2,7 @@
     {{ form_row(articleForm.title) }}
     {{ form_row(articleForm.content) }}
     {{ form_row(articleForm.author) }}
+    {{ form_row(articleForm.imageFile) }}
     {% if articleForm.publishedAt is defined %}
         {{ form_row(articleForm.publishedAt) }}
     {% endif %}

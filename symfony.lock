@@ -114,6 +114,9 @@
     "gedmo/doctrine-extensions": {
         "version": "v2.4.37"
     },
+    "imagine/imagine": {
+        "version": "1.2.2"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -129,6 +132,22 @@
     "knplabs/knp-time-bundle": {
         "version": "v1.9.1"
     },
+    "league/flysystem": {
+        "version": "1.0.57"
+    },
+    "liip/imagine-bundle": {
+        "version": "1.8",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.8",
+            "ref": "1d42bc3f713130582e6e0c475c49bc327ab0a2a2"
+        },
+        "files": [
+            "config/packages/liip_imagine.yaml",
+            "config/routes/liip_imagine.yaml"
+        ]
+    },
     "michelf/php-markdown": {
         "version": "1.8.0"
     },
@@ -143,6 +162,18 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.2.3"
+    },
+    "oneup/flysystem-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "0eb87bba411c227da027fe5f7c1dc7954b02f242"
+        },
+        "files": [
+            "config/packages/oneup_flysystem.yaml"
+        ]
     },
     "phpdocumentor/reflection-common": {
         "version": "2.0.0"

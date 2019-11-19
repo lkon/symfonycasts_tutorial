@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use App\Service\UploaderHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -84,10 +85,16 @@ class Article
      */
     private $specificLocationName;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ArticleReference", mappedBy="article")
+     */
+    private $articleReferences;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->articleReferences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,6 +165,11 @@ class Article
     public function getImageFilename(): ?string
     {
         return $this->imageFilename;
+    }
+
+    public function getImagePath()
+    {
+        return UploaderHelper::ARTICLE_IMAGE.'/'.$this->getImageFilename();
     }
 
     public function setImageFilename(?string $imageFilename): self
@@ -252,7 +264,8 @@ class Article
         return $this;
     }
 
-    public function isPublished():bool {
+    public function isPublished(): bool
+    {
         return $this->publishedAt !== null;
     }
 
@@ -261,11 +274,10 @@ class Article
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        if (stripos($this->getTitle(), 'the borg') !== false){
+        if (stripos($this->getTitle(), 'the borg') !== false) {
             $context->buildViolation('Um.. the Bork kinda makes us nervous')
                 ->atPath('title')
-                ->addViolation()
-            ;
+                ->addViolation();
         }
     }
 
@@ -291,5 +303,13 @@ class Article
         $this->specificLocationName = $specificLocationName;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|ArticleReference[]
+     */
+    public function getArticleReferences(): Collection
+    {
+        return $this->articleReferences;
     }
 }

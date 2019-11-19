@@ -6,13 +6,6 @@
 {% endblock %}
 
 {% block content_body %}
-    <form action="{{ path('upload_test') }}" enctype="multipart/form-data" method="post">
-        <div class="form-group">
-            <input type="file" name="image">
-        </div>
-        <button type="submit" class="btn btn-block btn-outline-primary">Upload!</button>
-    </form>
-
     <h1>Edit the Article</h1>
 
     {{ include('article_admin/_form.html.twig',{

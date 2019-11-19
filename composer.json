@@ -9,6 +9,8 @@
         "knplabs/knp-markdown-bundle": "*",
         "knplabs/knp-paginator-bundle": "*",
         "knplabs/knp-time-bundle": "*",
+        "liip/imagine-bundle": "^2.2",
+        "oneup/flysystem-bundle": "^3.1",
         "sensio/framework-extra-bundle": "*",
         "stof/doctrine-extensions-bundle": "*",
         "symfony/asset": "*",
